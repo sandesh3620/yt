@@ -1,0 +1,59 @@
+<html>
+<head>
+    <title>Sentiment Analysis Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Sentiment Analysis Results</h1>
+
+    <div>
+        <canvas id="sentimentChart"></canvas>
+    </div>
+
+    <table>
+        <tr>
+            <th>Comment</th>
+            <th>Sentiment Score</th>
+        </tr>
+        {% for index in range(comments|length) %}
+            {% set comment = comments[index] %}
+            {% set score = sentiment_scores[index] %}
+            <tr>
+                <td>{{ comment }}</td>
+                <td>{{ score }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        var sentimentData = {
+            positive: {{ sentiment_counts.positive }},
+            negative: {{ sentiment_counts.negative }},
+            neutral: {{ sentiment_counts.neutral }}
+        };
+        var ctx = document.getElementById('sentimentChart').getContext('2d');
+        var sentimentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Positive', 'Negative', 'Neutral'],
+                datasets: [{
+                    label: 'Sentiment Analysis',
+                    data: [sentimentData.positive, sentimentData.negative, sentimentData.neutral],
+                    backgroundColor: ['green', 'red', 'gray'],
+                    borderColor: 'black',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0,
+                        maxTicksLimit: 5
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
